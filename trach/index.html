@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Card</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="./CSS/style.css">
+</head>
+
+<body>
+    <!-- nav -->
+    <nav>
+        <h2 class="logo">Omar Betawy</h2>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section id="home" class="sec1">
+        <div class="content-container">
+            <div class="image-container">
+                <img src="./images/mypro.jpg" alt="profile-pic">
+            </div>
+            <div class="text-container">
+                <p><span class="hello"></span></p>
+                
+                <h2 class="amr"><a href="#contact" onclick="toggleSocialLinks()">Contact Me</a></h2>
+<div class="social-links hidden">
+    <a href="https://www.linkedin.com/in/omar-ebrahim-493357290" target="_blank"><i class='bx bxl-linkedin-square'></i></a>
+    <a href="https://www.facebook.com/omar.betawy" target="_blank"><i class='bx bxl-facebook'></i></a>
+    <a href="https://github.com/OmarElzero" target="_blank"><i class='bx bxl-github'></i></a>
+</div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="sec2">
+        <div class="content-container">
+            <div class="image-container2">
+                <img src="./images/mypro.jpg" alt="about-pic">
+            </div>
+            <div class="text-container2">
+                <h2>About Me</h2>
+                <p><span class="abo"></span></p>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience" class="sec3">
+        <div class="content-container2">
+            <h1>Experience</h1>
+            <div class="experience-container">
+                <div class="experience-item" onclick="showExperienceDetails('job1')">
+                    <h3>Software Engineer (Intern)</h3>
+                </div>
+                <div id="job1" class="experience-details">
+                    <p><span class="j1"></span></p>
+                </div>
+                <div class="experience-item" onclick="showExperienceDetails('job2')">
+                    <h3>Founder Academy</h3>
+                </div>
+                <div id="job2" class="experience-details">
+                    <p><span class="j2"></span></p>
+                    
+                </div>
+                <div class="experience-item" onclick="showExperienceDetails('job3')">
+                    <h3>AI Trainer</h3>
+                </div>
+                
+                <div id="job3" class="experience-details">
+                    <p><span class="j3"></span></p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+
+    <section id="contact" class="sec4">
+        <h2>Contact Me</h2>
+        <div class="content-container4">
+            <form class="contact">
+                <div>
+                <input type="text" placeholder="Name" required>
+                <input type="email" placeholder="Email" required>
+                </div>
+                <div>
+                    <input type="tel" placeholder="Phone">
+                    <input type="text" placeholder="subject">
+                </div>
+                
+                
+                <textarea placeholder="Enter your message" required></textarea>
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <script src="./JAVASCRIPTS/scripts.js"></script>
+</body>
+</html>
