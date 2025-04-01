@@ -13,7 +13,7 @@ class IftarManager{
         head = NULL;
         tail = NULL;
     }
-    Node guest_list = *head;
+    // Node guest_list = *head;
     void add_guest(Guest guest);
     void display_all_guests();
     void update_guest_invitation(string name, string new_date);
@@ -36,21 +36,21 @@ void Guest::display_guest(){
 
 ///////////////////////////////////////////////////////Class IftarManager Functions/////////////////////////////////////////
 void IftarManager::add_guest(Guest guest){
-    guest_list.add_at_begining(guest, &head, &tail);
+    head->add_at_begining(guest, &head, &tail);
 }
 void IftarManager::display_all_guests(){
-    guest_list.print_list(head);
+    head->print_list(head);
     
 }
 void IftarManager::update_guest_invitation(string name, string new_date){
-guest_list.update_specific_date(Guest(name,"hh","ff"), new_date, head);
+    head->update_specific_date(Guest(name,"hh","ff"), new_date, head);
 
 }
 void IftarManager::send_reminder(string date){
-    guest_list.send_reminder_node(date, head);
+    head->send_reminder_node(date, head);
 }
 void IftarManager::sort_guest_list(){
-    // guest_list.sort_guest_list(head);
+    head->sort_guest_list(head);
 }
 
 
@@ -69,10 +69,11 @@ int main(){
 while(true){
     cout << "Welcome to Iftar Manager!\n";
     cout << "1.Start\n";
-    cout << "2.Exit\n";
+    cout << "2.Exit\n:";
     int x;
     cin >> x;
     if (x==1){
+        while(true){
         cout << "What do you wanna do ?\n";
         cout << "1.add a guest\n";
         cout << "2.delete a guest\n";
@@ -81,6 +82,9 @@ while(true){
         cout << "5.ubdate date for all guests\n";
         cout << "6.ubdate date for specific guest\n";
         cout << "7.send a reminder to all guests\n";
+        cout << "8.sort guest list\n";
+        cout << "9.Exit\n";
+        cout << "10.Manual Tests\n";
         int choice2;
         cin >> choice2;
         string name;
@@ -96,14 +100,14 @@ while(true){
             cin >> contact;
             cout << "\nIftar date: ";
             cin >> iftar_date;
-            iftarManager.add_guest(Guest(name,"df","df"));       
+            iftarManager.add_guest(Guest(name,contact,iftar_date));       
             break;
         case 2:
             cout << "Enter the name of the guest you want to delete\n";
             cin >> name;
-            head->remove_with_name(Guest(name,"df","df"),&head,&tail); 
+            head->remove_with_name(Guest(name,"df","df"),&head,&tail);
             break;
-        case 3: 
+        case 3:
             cout << "here are all of your guests\n";
             iftarManager.display_all_guests();
             break;
@@ -127,14 +131,42 @@ while(true){
         case 7:
             cout << "Enter the date to send reminders for: ";
             cin >> iftar_date;
-            head->send_reminder_node(iftar_date, head);
+            // head->send_reminder_node(iftar_date, head);
+            iftarManager.send_reminder(iftar_date);
             break;
         default:
             cout << "Invalid choice! Please enter a valid number.\n";
             break;
+        case 8:
+            iftarManager.sort_guest_list();
+            break;
+        case 9:
+            head->free_list(&head);
+            break;
+        case 10:
+        iftarManager.add_guest(Guest("omar","0114551455","2004-11-05"));
+        iftarManager.add_guest(Guest("Mohamed","0114551455","2007-11-05"));
+        iftarManager.add_guest(Guest("Ahmed","0114551455","1999-11-05"));
+        iftarManager.add_guest(Guest("SAyed","0114551455","3050-11-05"));
+        iftarManager.add_guest(Guest("Moo","0114551455","2015-11-05"));
+        cout << "Before sorting : \n";
+        iftarManager.display_all_guests();
+        cout << "\nAfter Sorting: \n";
+        iftarManager.sort_guest_list();
+        iftarManager.display_all_guests();
         }
+        if (choice2==9){
+            cout << "Goodbye!\n";
+            break;
+        }
+        else{
+
+        
         continue;
     }
+    }
+        
+}
     else if (x==2){
         cout << "Goodbye!\n";
         break;
