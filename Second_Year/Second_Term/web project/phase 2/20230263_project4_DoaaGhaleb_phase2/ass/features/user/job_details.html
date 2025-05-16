@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Details - JobSearch</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/user.css">
+</head>
+<body>
+    <div id="navbar-container"></div>
+    <main class="container">
+        <section id="job-details-section" class="job-details-page">
+            <!-- Job details will be loaded here -->
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 JobSearch. All rights reserved.</p>
+    </footer>
+    <script src="../../assets/js/main.js"></script>
+    <script src="../../assets/js/user.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const params = new URLSearchParams(window.location.search);
+        const jobId = params.get('id');
+        const section = document.getElementById('job-details-section');
+        if (!jobId || !section) {
+            section.innerHTML = '<p>Job not found.</p>';
+            return;
+        }
+        const jobs = getJobs();
+        const job = jobs.find(j => j.id === jobId);
+        if (!job) {
+            section.innerHTML = '<p>Job not found.</p>';
+            return;
+        }
+        section.innerHTML = `
+            <div class="job-details-header improved-details">
+                <div class="job-details-title-block">
+                    <h2 class="job-details-title">${job.title}</h2>
+                    <span class="job-details-salary">${job.salary}</span>
+                </div>
+                <div class="job-details-meta">
+                    <span><strong>Company:</strong> ${job.company}</span>
+                    <span><strong>Experience:</strong> ${job.experience} years</span>
+                    <span><strong>Posted:</strong> ${formatDate(job.createdAt)}</span>
+                </div>
+            </div>
+            <div class="job-details-body">
+                <h3>Job Description</h3>
+                <div class="job-details-description">${job.description.replace(/\n/g, '<br>')}</div>
+            </div>
+            <div class="job-details-actions">
+                <button id="apply-job-btn" class="btn-primary">Apply Now</button>
+            </div>
+        `;
+        // Apply button logic
+        const applyBtn = document.getElementById('apply-job-btn');
+        const user = getCurrentUser();
+        const applications = user ? getApplications().filter(app => app.userId === user.id) : [];
+        const hasApplied = applications.some(app => app.jobId === jobId);
+        if (!user || user.role !== 'user') {
+            applyBtn.style.display = 'none';
+        } else {
+            if (hasApplied) {
+                applyBtn.textContent = 'Already Applied';
+                applyBtn.disabled = true;
+            } else {
+                applyBtn.onclick = function() {
+                    applyToJob(jobId);
+                    applyBtn.textContent = 'Applied';
+                    applyBtn.disabled = true;
+                };
+            }
+        }
+    });
+    </script>
+</body>
+</html>

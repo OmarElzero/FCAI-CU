@@ -4,6 +4,13 @@
 #include <bits/stdc++.h>
 #include <string>
 #include <curl/curl.h>
+#include <cstring>
+
+#define USERNAME "email@gmail.com"
+#define PASSWORD "password"
+#define SMTP_SERVER "smtps://smtp.gmail.com:465"
+#define RECIPIENT "<receiver@gmail.com>"
+#define MAILFROM "<email@gmail.com>"
 using namespace std;
 
     
@@ -68,6 +75,7 @@ void print_specific_guest(Guest guest, Node *head);
 void update_specific_date(Guest guest, string new_date, Node *head);
 void send_reminder_node(string date, Node *head);
 void sort_guest_list(Node *head);
+void send_email();
 
 
 
@@ -361,6 +369,81 @@ void Node::sort_guest_list(Node* head) {
         current = current->next;
     }
 }
+
+
+
+
+////////////////////////////////////////////////// for sending real emails ///////////////////////////////
+
+
+struct upload_status {
+    int lines_read;
+};
+
+static const char *payload_text[] = {
+    "Date: Tuesday, 1 April 2025 21:54:29 +1100\r\n",
+    "To: " RECIPIENT "\r\n",
+    "From: " MAILFROM "\r\n",
+    "Subject: You are sweet\r\n",
+    "\r\n", 
+    "You are sweet.\r\n",
+    "\r\n",
+    "Because you like Anime.\r\n",
+    "Yours, Omar.\r\n",
+    NULL
+};
+
+static size_t payload_source(void *ptr, size_t size, size_t nmemb, void *userp) {
+    struct upload_status *upload_ctx = (struct upload_status *)userp;
+    const char *data;
+
+    if ((size == 0) || (nmemb == 0) || ((size * nmemb) < 1)) {
+        return 0;
+    }
+
+    data = payload_text[upload_ctx->lines_read];
+
+    if (data) {
+        size_t len = strlen(data);
+        memcpy(ptr, data, len);
+        upload_ctx->lines_read++;
+        return len;
+    }
+
+    return 0;
+}
+
+// void Node::send_email() {
+//     CURL *curl;
+//     CURLcode res = CURLE_OK;
+//     struct curl_slist *recipients = NULL;
+//     struct upload_status upload_ctx = {0};
+
+//     curl = curl_easy_init();
+//     if (curl) {
+//         curl_easy_setopt(curl, CURLOPT_URL, SMTP_SERVER);
+//         curl_easy_setopt(curl, CURLOPT_USE_SSL, (long)CURLUSESSL_ALL);
+//         curl_easy_setopt(curl, CURLOPT_USERNAME, USERNAME);
+//         curl_easy_setopt(curl, CURLOPT_PASSWORD, PASSWORD);
+//         curl_easy_setopt(curl, CURLOPT_MAIL_FROM, MAILFROM);
+        
+//         recipients = curl_slist_append(recipients, RECIPIENT);
+//         curl_easy_setopt(curl, CURLOPT_MAIL_RCPT, recipients);
+//         curl_easy_setopt(curl, CURLOPT_READFUNCTION, payload_source);
+//         curl_easy_setopt(curl, CURLOPT_READDATA, &upload_ctx);
+//         curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
+//         curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+
+//         res = curl_easy_perform(curl);
+
+//         if (res != CURLE_OK) {
+//             std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
+//         }
+
+//         curl_slist_free_all(recipients);
+//         curl_easy_cleanup(curl);
+//     }
+// }
 
 
 

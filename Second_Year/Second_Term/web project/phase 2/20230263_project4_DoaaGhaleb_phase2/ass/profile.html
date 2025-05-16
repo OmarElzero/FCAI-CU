@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - JobSearch</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/user.css">
+</head>
+<body class="requires-auth">
+    <div id="navbar-container"></div>
+    <main class="container">
+        <section class="user-header">
+            <h1>My Profile</h1>
+            <p>View and update your personal information</p>
+        </section>
+        <section class="profile-section">
+            <form id="profile-form" class="auth-form" enctype="multipart/form-data">
+                <div class="profile-picture-group" style="display:flex;flex-direction:column;align-items:center;margin-bottom:24px;">
+                    <div id="profile-picture-wrapper" style="position:relative;width:110px;height:110px;">
+                        <img id="profile-picture-preview" src="" alt="Profile Picture" style="display:none;width:110px;height:110px;border-radius:50%;object-fit:cover;box-shadow:0 2px 8px #0001;">
+                        <div id="profile-initial-avatar" style="display:none;width:110px;height:110px;border-radius:50%;background:#4a90e2;color:#fff;display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:700;box-shadow:0 2px 8px #0001;"></div>
+                    </div>
+                    <input type="file" id="profile-picture" name="profile-picture" accept="image/*" style="margin-bottom:8px;">
+                    <small>Upload a profile picture (JPG, PNG)</small>
+                </div>
+                <div class="form-group">
+                    <label for="profile-name">Name</label>
+                    <input type="text" id="profile-name" name="profile-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="profile-email">Email</label>
+                    <input type="email" id="profile-email" name="profile-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="profile-linkedin">LinkedIn</label>
+                    <input type="url" id="profile-linkedin" name="profile-linkedin" placeholder="https://linkedin.com/in/yourprofile" style="width:100%;">
+                </div>
+                <div class="form-group">
+                    <label for="profile-cv">CV (PDF Link or Upload)</label>
+                    <input type="url" id="profile-cv-link" name="profile-cv-link" placeholder="Paste CV link here" style="width:100%;margin-bottom:8px;">
+                    <input type="file" id="profile-cv-file" name="profile-cv-file" accept="application/pdf">
+                    <small id="cv-upload-status"></small>
+                </div>
+                <div class="form-error" id="profile-error"></div>
+                <button type="submit" class="btn-primary">Save Changes</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 JobSearch. All rights reserved.</p>
+    </footer>
+    <script src="assets/js/main.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const user = getCurrentUser();
+        if (!user) return;
+        // Load user profile data
+        const users = getUsers();
+        const currentUser = users.find(u => u.id === user.id);
+        const profilePicturePreview = document.getElementById('profile-picture-preview');
+        const profileInitialAvatar = document.getElementById('profile-initial-avatar');
+        function showProfileAvatar() {
+            if (currentUser && currentUser.profilePicture) {
+                profilePicturePreview.src = currentUser.profilePicture;
+                profilePicturePreview.style.display = 'block';
+                profileInitialAvatar.style.display = 'none';
+            } else {
+                // Show initial
+                const initial = (currentUser && currentUser.username) ? currentUser.username.charAt(0).toUpperCase() : '?';
+                profileInitialAvatar.textContent = initial;
+                profileInitialAvatar.style.display = 'flex';
+                profilePicturePreview.style.display = 'none';
+            }
+        }
+        if (currentUser) {
+            document.getElementById('profile-name').value = currentUser.username || '';
+            document.getElementById('profile-email').value = currentUser.email || '';
+            document.getElementById('profile-linkedin').value = currentUser.linkedin || '';
+            document.getElementById('profile-cv-link').value = currentUser.cvLink || '';
+            showProfileAvatar();
+        }
+        // Handle profile picture upload
+        document.getElementById('profile-picture').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    if(currentUser) currentUser.profilePicture = evt.target.result;
+                    showProfileAvatar();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        // Handle CV file upload
+        document.getElementById('profile-cv-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const status = document.getElementById('cv-upload-status');
+            if (file && file.type === 'application/pdf') {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    // Save base64 string in user profile (not secure for real apps)
+                    if(currentUser) currentUser.cvFile = evt.target.result;
+                    status.textContent = 'CV uploaded.';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                status.textContent = 'Please upload a PDF file.';
+            }
+        });
+        // Save profile changes
+        document.getElementById('profile-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const error = document.getElementById('profile-error');
+            const name = document.getElementById('profile-name').value;
+            const email = document.getElementById('profile-email').value;
+            const linkedin = document.getElementById('profile-linkedin').value;
+            const cvLink = document.getElementById('profile-cv-link').value;
+            if (!name || !email) {
+                error.textContent = 'Name and email are required.';
+                error.style.display = 'block';
+                return;
+            }
+            // Update user data
+            currentUser.username = name;
+            currentUser.email = email;
+            currentUser.linkedin = linkedin;
+            currentUser.cvLink = cvLink;
+            // Save to users array
+            const idx = users.findIndex(u => u.id === user.id);
+            if (idx !== -1) {
+                users[idx] = currentUser;
+                localStorage.setItem('users', JSON.stringify(users));
+                // Update currentUser in localStorage
+                localStorage.setItem('currentUser', JSON.stringify({
+                    ...user,
+                    username: name,
+                    email: email,
+                    profilePicture: currentUser.profilePicture
+                }));
+                error.textContent = 'Profile updated successfully!';
+                error.style.color = 'green';
+                error.style.display = 'block';
+            }
+        });
+    });
+    </script>
+</body>
+</html>

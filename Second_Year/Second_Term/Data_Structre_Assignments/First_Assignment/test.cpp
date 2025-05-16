@@ -1,174 +1,90 @@
-#include <bits/stdc++.h>
-using namespace std;
 
-class Polynomial {
-private:
-    int order;
-    int equality;
-    int* coefficients;
+#include <iostream>
+#include <string>
+#include <curl/curl.h>
+#include <cstring>
+#include <ctime>
+
+#define USERNAME "email@gmail.com"
+#define PASSWORD "password"
+#define SMTP_SERVER "smtps://smtp.gmail.com:465"
+#define RECIPIENT "<reciever@gmail.com>"
+#define MAILFROM "<email@gmail.com>"
 
 
-public:
-    Polynomial(int degree) {
-        order = degree;
-        coefficients = new int[order + 1]();
-        equality = 0;
-    }
 
-    ~Polynomial() {
-        delete[] coefficients;
-    }
-
-    void input_coff() {
-        cout<<"Enter Polynomial: ";
-        for (int i = 0; i <= order; i++) {
-            if (i==0){
-                cin >> equality;
-            }
-            cin >> coefficients[i];
-        }
-    }
-
-    void display_poly() const {
-        bool flag = true;
-        for (int i = order; i >= 0; i--) {
-            if (flag || coefficients[i] != 0 || i == 0) {
-                if (!flag){
-                    if(coefficients[i]>=0){
-                        cout<<" + ";
-                    }
-                    else{
-                        cout<<" - ";
-                    }
-                }
-                else if(coefficients[i]<0){
-                    cout<<" - ";
-                }
-
-                cout << abs(coefficients[i]);
-                if (i > 1) cout << "x^" << i;
-                else if (i == 1) cout << "x";
-
-                flag = false;
-            }
-        }
-        cout << " = " << equality << endl;
-    }
-
-    Polynomial operator+(const Polynomial& other)  {
-        int deg_final;
-        if(order >= other.order){
-            deg_final=order;
-        }
-        else{
-            deg_final=other.order;
-        }
-        Polynomial final_equ(deg_final);
-        final_equ.equality = equality + other.equality;
-
-        for (int i = 0; i <= deg_final; i++) {
-            int poly_1 , poly_2;
-            if(i<=order){
-                poly_1 = coefficients[i];
-            }
-            else{
-                poly_1 = 0;
-            }
-            if (i <= other.order) {
-                poly_2 = other.coefficients[i];
-            }
-            else{
-                poly_2 =0;
-            }
-            final_equ.coefficients[i] = poly_1 + poly_2;
-        }
-        return final_equ;
-    }
-
-    Polynomial operator-(const Polynomial& other) {
-        int deg_final;
-        if(order >= other.order){
-            deg_final=order;
-        }
-        else{
-            deg_final=other.order;
-        }
-        Polynomial final_equ(deg_final);
-        final_equ.equality = other.equality - equality;
-
-        for (int i = 0; i <= deg_final; i++) {
-            int poly_1 , poly_2;
-            if(i<=order){
-                poly_1 = coefficients[i];
-            }
-            else{
-                poly_1 = 0;
-            }
-            if (i <= other.order) {
-                poly_2 = other.coefficients[i];
-            }
-            else{
-                poly_2 =0;
-            }
-            final_equ.coefficients[i] = poly_2 - poly_1;
-        }
-        return final_equ;
-    }
-
-    static bool readPolynomialsFromFile(const string& filePath, Polynomial*& poly1, Polynomial*& poly2) {
-        ifstream file(filePath);
-        if (!file) {
-            cerr << "Error: Unable to open file.\n";
-            return false;
-        }
-
-        int deg1, deg2, eq1, eq2;
-
-        file >> deg1;
-        poly1 = new Polynomial(deg1);
-        for (int i = 0; i <= deg1; i++) {
-            file >> poly1->coefficients[i];
-        }
-        file >> poly1->equality;
-
-        file >> deg2;
-        poly2 = new Polynomial(deg2);
-        for (int i = 0; i <= deg2; i++) {
-            file >> poly2->coefficients[i];
-        }
-        file >> poly2->equality;
-
-        file.close();
-        return true;
-    }
+struct upload_status {
+    int lines_read;
 };
 
-int main() {
+static const char *payload_text[] = {
+    "Date: Tusday, 1 April 2025 21:54:29 +1100\r\n",
+    "To: " RECIPIENT "\r\n",
+    "From: " MAILFROM "\r\n",
+    "Subject: Yor are sweet\r\n",
+    "\r\n", /* empty line to divide headers from body, see RFC5322 */
+    "You are Sweet.\r\n",
+    "\r\n",
+    "Because you like Anime.\r\n",
+    "Yours Omar.\r\n",
+    NULL
+};
 
-    Polynomial* poly1 = nullptr;
-    Polynomial* poly2 = nullptr;
+static size_t payload_source(void *ptr, size_t size, size_t nmemb, void *userp)
+{
+    struct upload_status *upload_ctx = (struct upload_status *)userp;
+    const char *data;
 
-    string filePath = "/root/FCAI-CU/Second_Year/Second_Term/Data_Structre_Assignments/First_Assignment/example.txt";
-
-    if (Polynomial::readPolynomialsFromFile(filePath, poly1, poly2)) {
-        cout << "Polynomial 1: ";
-        poly1->display_poly();
-
-        cout << "Polynomial 2: ";
-        poly2->display_poly();
-
-        Polynomial sum = *poly1 + *poly2;
-        cout << "Sum: ";
-        sum.display_poly();
-
-        Polynomial diff = *poly1 - *poly2;
-        cout << "Difference: ";
-        diff.display_poly();
+    if ((size == 0) || (nmemb == 0) || ((size*nmemb) < 1)) {
+        return 0;
     }
 
-    delete poly1;
-    delete poly2;
+    data = payload_text[upload_ctx->lines_read];
 
+    if (data) {
+        size_t len = strlen(data);
+        memcpy(ptr, data, len);
+        upload_ctx->lines_read++;
+        return len;
+    }
 
     return 0;
+}
+
+int main(void)
+{
+    CURL *curl;
+    CURLcode res = CURLE_OK;
+    struct curl_slist *recipients = NULL;
+    struct upload_status upload_ctx;
+
+    upload_ctx.lines_read = 0;
+
+    curl = curl_easy_init();
+    if (curl) {
+        curl_easy_setopt(curl, CURLOPT_URL, SMTP_SERVER);
+        curl_easy_setopt(curl, CURLOPT_USE_SSL, (long)CURLUSESSL_ALL);
+        curl_easy_setopt(curl, CURLOPT_USERNAME, USERNAME);
+        curl_easy_setopt(curl, CURLOPT_PASSWORD, PASSWORD);
+        curl_easy_setopt(curl, CURLOPT_MAIL_FROM, MAILFROM);
+
+        recipients = curl_slist_append(recipients, RECIPIENT);
+        curl_easy_setopt(curl, CURLOPT_MAIL_RCPT, recipients);
+
+        curl_easy_setopt(curl, CURLOPT_READFUNCTION, payload_source);
+        curl_easy_setopt(curl, CURLOPT_READDATA, &upload_ctx);
+        curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
+
+        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+
+        res = curl_easy_perform(curl);
+
+        if (res != CURLE_OK)
+            std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
+
+        curl_slist_free_all(recipients);
+        curl_easy_cleanup(curl);
+    }
+
+    return (int)res;
 }

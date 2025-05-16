@@ -1,0 +1,179 @@
+/* Admin-specific styles */
+
+.admin-header {
+    background-color: white;
+    padding: 30px;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.admin-header h1 {
+    margin-right: auto;
+    margin-bottom: 10px;
+}
+
+.admin-header p {
+    width: 100%;
+    margin-top: 10px;
+    color: var(--light-text);
+}
+
+.job-management {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filter-controls {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.job-form-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.job-form {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+#job-description {
+    resize: vertical;
+    min-height: 150px;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn-edit, .btn-delete, .btn-view-details {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-edit {
+    background-color: #ffb347;
+    color: #fff;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.btn-edit:hover {
+    background-color: #ff9800;
+}
+
+.btn-delete {
+    background-color: #e57373;
+    color: #fff;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.btn-delete:hover {
+    background-color: #d32f2f;
+}
+
+.btn-view-details {
+    background-color: var(--primary-color);
+    color: blue;
+}
+
+.btn-applicants {
+    background-color: #4a90e2;
+    color: #fff;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.btn-applicants:hover {
+    background-color: #357abd;
+}
+
+/* Job details styling */
+.job-details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.job-details-salary {
+    color: var(--success-color);
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.job-details-company {
+    margin-bottom: 15px;
+}
+
+.job-details-info {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 20px;
+    color: var(--light-text);
+}
+
+.job-details-description {
+    line-height: 1.8;
+    margin-top: 20px;
+}
+
+.job-card-footer {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+/* Responsive design for admin pages */
+@media (max-width: 768px) {
+    .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .admin-header .btn-primary {
+        margin-top: 15px;
+    }
+    
+    .filter-controls {
+        flex-direction: column;
+    }
+}

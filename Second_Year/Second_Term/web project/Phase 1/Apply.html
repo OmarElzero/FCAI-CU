@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply for Software Engineer Position</title>
+    <link rel="stylesheet" href="Apply.css">
+</head>
+<header>
+    <nav>
+        <ul>
+            <li><a href="homepage2.html">Home</a></li>
+            <li><a href="applied_jobs.html">Applied Jobs</a></li>
+            <li><a href="Filteration.html">Filter</a></li>
+            <li><a href="profile.html">Profile</a></li>
+            <li><a href="login.html">Log out</a></li>
+            
+        </ul>
+    </nav>
+</header>
+<body>
+
+    <div class="container">
+        <h1>Apply for Software Engineer</h1>
+        <form action="submit_application.php" method="post">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="resume">Resume (URL):</label>
+            <input type="url" id="resume" name="resume" required>
+
+            <label for="cover-letter">Cover Letter:</label>
+            <textarea id="cover-letter" name="cover_letter" rows="5" required></textarea>
+
+            <button type="submit">Submit Application</button>
+        </form>
+    </div>
+
+</body>
+</html>

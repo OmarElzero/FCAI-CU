@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - JobSearch</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/admin.css">
+</head>
+<body class="requires-auth requires-admin">
+    <!-- Navbar will be dynamically loaded here -->
+    <div id="navbar-container"></div>
+
+    <main class="container">
+        <section class="admin-header">
+            <h1>Company Dashboard</h1>
+            <p id="company-name-display">Welcome to your company dashboard</p>
+            <a href="add_job.html" class="btn-primary">Add New Job</a>
+        </section>
+
+        <section class="job-management">
+            <h2>Manage Your Job Listings</h2>
+            
+            <div class="filter-controls">
+                <select id="status-filter">
+                    <option value="all">All Jobs</option>
+                    <option value="Open">Open Jobs</option>
+                    <option value="Closed">Closed Jobs</option>
+                </select>
+                <input type="text" id="job-search" placeholder="Search jobs...">
+            </div>
+            
+            <div id="admin-jobs-container" class="jobs-grid">
+                <!-- Job cards will be dynamically loaded here -->
+                <p id="no-jobs-message" style="display: none;">No jobs found. Create your first job listing!</p>
+            </div>
+        </section>
+        
+        <div id="job-details-modal" class="modal">
+            <div class="modal-content">
+                <!-- <span class="close-modal">&times;</span> -->
+                <div id="job-details-container">
+                    <!-- Job details will be displayed here -->
+                </div>
+                <!-- <div class="modal-actions">
+                    <button id="edit-job-btn" class="btn-secondary">Edit Job</button>
+                    <button id="delete-job-btn" class="btn-danger">Delete Job</button>
+                    <button id="view-applicants-btn" class="btn-primary">View Applicants</button>
+                </div> -->
+            </div>
+        </div>
+        <div id="applicants-modal" class="modal">
+            <div class="modal-content">
+                <!-- <span class="close-modal">&times;</span> -->
+                <div id="applicants-container">
+                    <!-- Applicants will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 JobSearch. All rights reserved.</p>
+    </footer>
+
+    <script src="../../assets/js/main.js"></script>
+    <script src="../../assets/js/admin.js"></script>
+</body>
+</html>

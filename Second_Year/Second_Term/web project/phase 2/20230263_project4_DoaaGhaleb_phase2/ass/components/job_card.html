@@ -1,0 +1,19 @@
+<div class="job-card" data-job-id="{{jobId}}">
+    <div class="job-card-header">
+        <h3 class="job-title">{{jobTitle}}</h3>
+        <span class="job-salary">{{jobSalary}}</span>
+    </div>
+    <div class="job-card-body">
+        <p class="company-name">{{companyName}}</p>
+        <p class="job-experience">Experience: {{requiredExperience}} years</p>
+        <p class="job-description-preview">{{jobDescriptionPreview}}</p>
+    </div>
+    <div class="job-card-footer">
+        <button class="btn-view-details" onclick="viewJobDetails('{{jobId}}')">View Details</button>
+        <div class="admin-actions admin-only" data-company="{{companyName}}">
+            <button class="btn-edit" onclick="editJob('{{jobId}}')">Edit</button>
+            <button class="btn-delete" onclick="deleteJob('{{jobId}}')">Delete</button>
+            <button class="btn-applicants" onclick="viewApplicants('{{jobId}}')">View Applicants</button>
+        </div>
+    </div>
+</div>

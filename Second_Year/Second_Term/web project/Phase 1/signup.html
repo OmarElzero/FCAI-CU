@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="omnia.css">
+</head>
+<body>
+    <header class="main-header">
+        <nav>
+            <ul>
+                <li><a href="homepage.html">Home</a></li>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="signup.html">Sign Up</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <form class="form-box" action="/signup" method="POST">
+            <h2>Sign Up</h2>
+
+            <input type="text" name="username" placeholder="Username" required />
+            <input type="email" name="email" placeholder="Email" required />
+            <input type="password" name="password" placeholder="Password" required />
+            <input type="password" name="confirm_password" placeholder="Confirm Password" required />
+
+          
+            <input type="checkbox" id="isAdmin" name="is_company_admin" />
+
+            <div class="toggle-company">
+                <label for="isAdmin">
+                    <span>Are you a company admin?</span>
+                    <span class="admin-toggle">Yes</span>
+                </label>
+            </div>
+
+          
+            <div class="company-name">
+                <label for="company_name">Company Name</label>
+                <input type="text" id="company_name" name="company_name" placeholder="Company Name" />
+            </div>
+
+            <button type="submit">Sign Up</button>
+            
+
+            <div class="login-link">
+                Already have an account? <a href="login.html">Login</a>
+            </div>
+        </form>
+    </main>
+</body>
+</html>

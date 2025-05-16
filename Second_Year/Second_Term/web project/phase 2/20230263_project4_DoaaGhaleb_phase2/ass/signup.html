@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - JobSearch</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="auth-page">
+    <!-- Navbar will be dynamically loaded here -->
+    <div id="navbar-container"></div>
+
+    <main class="container">
+        <section class="auth-container">
+            <div class="auth-header">
+                <i class="fas fa-user-plus auth-icon"></i>
+                <h1>Create Your Account</h1>
+                <p class="auth-subtitle">Join our community and start your journey</p>
+            </div>
+            
+            <form id="signup-form" class="auth-form">
+                <div class="form-group">
+                    <label for="username"><i class="fas fa-user"></i> Username</label>
+                    <input type="text" id="username" name="username" placeholder="Choose a username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm-password"><i class="fas fa-check-circle"></i> Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" required>
+                </div>
+                
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="is-company" name="is-company">
+                    <label for="is-company">Register as Company Admin</label>
+                </div>
+                
+                <div class="form-group company-field" id="company-field">
+                    <label for="company-name"><i class="fas fa-building"></i> Company Name</label>
+                    <input type="text" id="company-name" name="company-name" placeholder="Enter your company name">
+                </div>
+                
+                <div class="form-terms checkbox-group">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                </div>
+                
+                <div class="form-error" id="signup-error"></div>
+                
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+            </form>
+            
+            <div class="auth-footer">
+                <p>Already have an account? <a href="login.html">Login here</a></p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 JobSearch. All rights reserved.</p>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Add smooth toggle animation for company field
+        document.addEventListener('DOMContentLoaded', function() {
+            const isCompanyCheckbox = document.getElementById('is-company');
+            const companyField = document.getElementById('company-field');
+            
+            if (isCompanyCheckbox && companyField) {
+                isCompanyCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        companyField.classList.add('visible');
+                    } else {
+                        companyField.classList.remove('visible');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
