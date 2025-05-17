@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ERDApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e3ddb7e2405c4d4e6da32ec82f320a55c8f68524")]
 [assembly: System.Reflection.AssemblyProductAttribute("ERDApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ERDApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -5,7 +5,7 @@ namespace ERDApp
 {
     public class Database
     {
-        private string connectionString = "Server=YOUR_SERVER;Database=YOUR_DATABASE;Trusted_Connection=True;";
+        private string connectionString = "Server=localhost;Database=ERDAppDB;Trusted_Connection=True;";
 
         public DataTable GetClients()
         {

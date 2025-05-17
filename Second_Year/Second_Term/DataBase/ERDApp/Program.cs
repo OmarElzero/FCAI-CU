@@ -1,25 +1,18 @@
 using System;
+using System.Windows.Forms;
 using System.Data;
 using System.Data.SQLite;
 
 namespace ERDApp
 {
-    class Program
+    static class Program
     {
-        static void Main(string[] args)
+        [STAThread]
+        static void Main()
         {
-            var db = new FakeDatabase();
-            db.CreateTable();
-            db.AddClient("Alice", "123456", "Main St", "VISA");
-            db.AddClient("Bob", "654321", "Second St", "MasterCard");
-            Console.WriteLine("All Clients:");
-            db.PrintClients();
-            db.UpdateClient(1, "Alice Smith", "123456", "Main St", "VISA");
-            Console.WriteLine("After Update:");
-            db.PrintClients();
-            db.DeleteClient(2);
-            Console.WriteLine("After Delete:");
-            db.PrintClients();
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new MainForm());
         }
     }
 

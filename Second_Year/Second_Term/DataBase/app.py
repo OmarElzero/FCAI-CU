@@ -1,82 +1,110 @@
 """
 Main application to demonstrate CRUD operations for the ERD-based system.
-Edit the connection string for your MS SQL Server.
+Edit the database path for your SQLite database.
 """
-from models import Base, Client, Worker, Specialities, Location, Task, SubTask, Request, AvailableSlot
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+import sqlite3
 
-# Edit this connection string for your MS SQL Server
-# Example: 'mssql+pyodbc://username:password@dsn_name'
-engine = create_engine('sqlite:///test.db')  # For demo/testing, uses SQLite
-Session = sessionmaker(bind=engine)
-session = Session()
+DB_PATH = 'test.db'
 
-# Create all tables (run once)
-Base.metadata.create_all(engine)
-
-def create_sample_data():
-    # Create a client
-    client = Client(name='John Doe', phone='123456789', address='123 Main St', payment_info='VISA')
-    session.add(client)
-    # Create a worker
-    worker = Worker(name='Alice')
-    session.add(worker)
-    # Create a speciality
-    speciality = Specialities(speciality_name='Plumbing')
-    session.add(speciality)
-    # Create a location
-    location = Location(location_name='Downtown')
-    session.add(location)
-    # Create a slot
-    slot = AvailableSlot(start_time='09:00', end_time='12:00')
-    session.add(slot)
-    # Create a task
-    task = Task(task_name='Fix Sink', avg_fee=50.0, avg_time_to_finish=2.0)
-    session.add(task)
-    # Create a subtask
-    subtask = SubTask(name='Turn off water', status='Pending', task=task)
-    session.add(subtask)
-    # Create a request
-    request = Request(request_address='123 Main St', client=client, slot=slot)
-    request.tasks.append(task)
-    session.add(request)
-    # Set relationships
-    worker.specialities.append(speciality)
-    worker.locations.append(location)
-    worker.slots.append(slot)
-    client.locations.append(location)
-    task.specialities.append(speciality)
-    session.commit()
-    print('Sample data created.')
+def add_client():
+    name = input('Enter client name: ')
+    phone = input('Enter client phone: ')
+    address = input('Enter client address: ')
+    payment_info = input('Enter payment info: ')
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS CLIENT (
+            CLIENT_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            NAME TEXT NOT NULL,
+            PHONE TEXT NOT NULL,
+            ADDRESS TEXT NOT NULL,
+            PAYMENT_INFO TEXT
+        )''')
+        cursor.execute('INSERT INTO CLIENT (NAME, PHONE, ADDRESS, PAYMENT_INFO) VALUES (?, ?, ?, ?)',
+                       (name, phone, address, payment_info))
+        conn.commit()
+        print('Client added.')
 
 def list_clients():
-    print('Clients:')
-    for client in session.query(Client).all():
-        print(f'- {client.client_id}: {client.name}, {client.phone}, {client.address}')
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS CLIENT (
+            CLIENT_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            NAME TEXT NOT NULL,
+            PHONE TEXT NOT NULL,
+            ADDRESS TEXT NOT NULL,
+            PAYMENT_INFO TEXT
+        )''')
+        cursor.execute('SELECT CLIENT_ID, NAME, PHONE, ADDRESS FROM CLIENT')
+        rows = cursor.fetchall()
+        print('Clients:')
+        for row in rows:
+            print(f'- {row[0]}: {row[1]}, {row[2]}, {row[3]}')
 
-def update_client(client_id, new_name):
-    client = session.query(Client).filter_by(client_id=client_id).first()
-    if client:
-        client.name = new_name
-        session.commit()
-        print(f'Client {client_id} updated.')
-    else:
-        print('Client not found.')
+def print_clients():
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS CLIENT (
+            CLIENT_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            NAME TEXT NOT NULL,
+            PHONE TEXT NOT NULL,
+            ADDRESS TEXT NOT NULL,
+            PAYMENT_INFO TEXT
+        )''')
+        cursor.execute('SELECT * FROM CLIENT')
+        rows = cursor.fetchall()
+        print('All client records:')
+        for row in rows:
+            print(row)
 
-def delete_client(client_id):
-    client = session.query(Client).filter_by(client_id=client_id).first()
-    if client:
-        session.delete(client)
-        session.commit()
-        print(f'Client {client_id} deleted.')
-    else:
-        print('Client not found.')
+def update_client():
+    client_id = input('Enter client ID to update: ')
+    new_name = input('Enter new name: ')
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute('UPDATE CLIENT SET NAME = ? WHERE CLIENT_ID = ?', (new_name, client_id))
+        if cursor.rowcount:
+            print(f'Client {client_id} updated.')
+        else:
+            print('Client not found.')
+        conn.commit()
+
+def delete_client():
+    client_id = input('Enter client ID to delete: ')
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM CLIENT WHERE CLIENT_ID = ?', (client_id,))
+        if cursor.rowcount:
+            print(f'Client {client_id} deleted.')
+        else:
+            print('Client not found.')
+        conn.commit()
+
+def main_menu():
+    while True:
+        print('\n--- Client Management Menu (SQLite, Raw Queries) ---')
+        print('1. Add client')
+        print('2. List clients')
+        print('3. Update client')
+        print('4. Delete client')
+        print('5. Print all client records')
+        print('0. Exit')
+        choice = input('Select an option: ')
+        if choice == '1':
+            add_client()
+        elif choice == '2':
+            list_clients()
+        elif choice == '3':
+            update_client()
+        elif choice == '4':
+            delete_client()
+        elif choice == '5':
+            print_clients()
+        elif choice == '0':
+            print('Exiting.')
+            break
+        else:
+            print('Invalid option. Please try again.')
 
 if __name__ == '__main__':
-    create_sample_data()
-    list_clients()
-    update_client(1, 'Jane Doe')
-    list_clients()
-    delete_client(1)
-    list_clients()
+    main_menu()
