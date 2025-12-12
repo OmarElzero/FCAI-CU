@@ -1,0 +1,162 @@
+Project Title:
+Simple Job Search Website (Inspired by Indeed.com)
+
+Objective:
+Build a simple, clean, and fully functional Job Search Website where two types of users (Company Admins and Users) can sign up, login, and interact with job listings.
+
+General Instructions:
+
+Frontend only: Use only HTML, CSS, and JavaScript (external files only).
+
+No frameworks or libraries like React, Vue, Tailwind, Bootstrap, etc.
+
+All files must be external:
+
+HTML files (.html)
+
+CSS files (.css)
+
+JavaScript files (.js)
+
+Organize the project into proper subfolders:
+
+/components/ → for reusable HTML components (like navbar, footer, job cards, etc.)
+
+/features/auth/ → for authentication forms (login/signup)
+
+/features/admin/ → for company admin pages (add job, edit job, view jobs)
+
+/features/user/ → for user pages (search jobs, apply, view applications)
+
+/assets/css/ → all CSS files
+
+/assets/js/ → all JavaScript files
+
+/assets/img/ → images if needed
+
+/report.txt → a text file describing the structure and important notes
+
+Features to Implement:
+
+✨ Company Admin Features:
+Sign Up
+
+Form fields: Username, Password, Confirm Password, Email, Is Company Admin checkbox (if true → extra Company Name field).
+
+Login
+
+Standard login form.
+
+Dashboard
+
+View a list of jobs created by the admin’s company.
+
+Add New Job
+
+Fields: ID, Job Title, Salary, Company Name, Job Status (Open/Closed dropdown), Description, Required Years of Experience.
+
+Edit Job
+
+Select a job from the list and edit its details.
+
+Delete Job
+
+Remove a job listing.
+
+✨ User Features:
+Sign Up
+
+Form fields: Username, Password, Confirm Password, Email, Is Admin checkbox (false by default).
+
+Login
+
+Standard login form.
+
+Browse/Search Jobs
+
+Search jobs by title or required years of experience.
+
+View Jobs
+
+See a list of available jobs (only “Open” jobs).
+
+View Job Details
+
+Click on a job card to view full details.
+
+Apply to Jobs
+
+Simple “Apply” button.
+
+View Applied Jobs
+
+View a personal list of jobs the user has applied for.
+
+Common Features:
+
+Dynamic Navigation Bar: Changes based on whether logged in as Admin, User, or not logged in.
+
+Form Validation: Check that required fields are filled out.
+
+Minimal Styling: Clean, professional design inspired by Indeed.com.
+
+Additional Requirement:
+
+Implement Local Storage (localStorage) to simulate backend functionality:
+
+Store user accounts and their roles (admin/user).
+
+Store job listings.
+
+Store job applications linked to specific users.
+
+Store login sessions (i.e., who is currently logged in).
+
+Upon page reload, data must persist by retrieving from localStorage.
+
+Logout should clear the current session only (not delete user/jobs data).
+
+File Naming and Structure:
+
+plaintext
+نسخ
+تحرير
+index.html
+/login.html
+/signup.html
+/admin/dashboard.html
+/admin/add_job.html
+/admin/edit_job.html
+/user/search_jobs.html
+/user/applied_jobs.html
+/components/navbar.html
+/components/job_card.html
+/assets/css/main.css
+/assets/css/admin.css
+/assets/css/user.css
+/assets/js/main.js
+/assets/js/admin.js
+/assets/js/user.js
+/assets/img/
+report.txt
+📜 report.txt Must Include:
+Explanation of folder structure.
+
+What each folder/component is responsible for.
+
+Description of navigation behavior.
+
+Notes on form validation and job application flow.
+
+Description of how localStorage is used (users, jobs, sessions, applications).
+
+Important decisions made (like why the navbar is split, or how job cards are reused).
+
+Important Notes:
+
+No backend needed. All data is saved locally in the browser using JavaScript localStorage.
+
+No inline CSS or JavaScript. Only external files.
+
+Keep code modular, reusable, and well-organized.
+

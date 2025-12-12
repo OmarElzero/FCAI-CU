@@ -1,0 +1,19 @@
+TimeBand,AgeGroup,PatientCount
+0-3 Months,0-15,730
+0-3 Months,16-64,5903
+0-3 Months,65+,2443
+3-6 Months,0-15,4770
+3-6 Months,16-64,5401
+3-6 Months,65+,2052
+6-9 Months,0-15,7690
+6-9 Months,16-64,500
+6-9 Months,65+,6837
+9-12 Months,0-15,1829
+9-12 Months,16-64,4055
+9-12 Months,65+,7816
+12-15 Months,0-15,4023
+12-15 Months,16-64,3230
+12-15 Months,65+,4012
+15-18 Months,0-15,1916
+15-18 Months,16-64,879
+15-18 Months,65+,4016

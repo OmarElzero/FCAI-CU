@@ -1,0 +1,1 @@
+Need a dashboard showing our delivery performance data for the executive meeting. Want to see delivery types breakdown, what causes delays, backlog trends, and regional differences. Also need employee metrics by department and state-level analysis. Make it professional looking with charts and a US map.

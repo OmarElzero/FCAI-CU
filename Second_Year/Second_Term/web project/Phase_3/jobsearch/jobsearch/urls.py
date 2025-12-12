@@ -16,11 +16,17 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
 from accounts.views import UserViewSet
 from jobs.views import JobViewSet
 from applications.views import ApplicationViewSet
+from django.views.static import serve
+import os
+
+# Get path to frontend files
+FRONTEND_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 
+                          "phase 2", "20230263_project4_DoaaGhaleb_phase2")
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')
@@ -30,4 +36,6 @@ router.register(r'applications', ApplicationViewSet, basename='application')
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),
+    # Serve frontend files
+    re_path(r'^ass/(?P<path>.*)$', serve, {'document_root': os.path.join(FRONTEND_DIR, 'ass')}),
 ]

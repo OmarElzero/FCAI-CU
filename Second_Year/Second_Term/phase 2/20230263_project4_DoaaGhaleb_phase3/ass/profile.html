@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - JobSearch</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/user.css">
+</head>
+<body class="requires-auth">
+    <div id="navbar-container"></div>
+    <script type="module">
+    import { checkAuth } from './assets/js/userjs/auth.js';
+    
+    // Check if user is authenticated and redirect if not
+    document.addEventListener('DOMContentLoaded', function() {
+        checkAuth({
+            requireAuth: true,
+            onAuthenticated: function(user) {
+                // Profile loaded, we could initialize profile data here
+                console.log('Profile loaded for user:', user.username);
+            }
+        });
+    });
+    </script>
+    <main class="container">
+        <section class="user-header">
+            <h1>My Profile</h1>
+            <p>View and update your personal information</p>
+        </section>
+        <section class="profile-section">
+            <form id="profile-form" class="auth-form" enctype="multipart/form-data">
+                <div class="profile-picture-group" style="display:flex;flex-direction:column;align-items:center;margin-bottom:24px;">
+                    <div id="profile-picture-wrapper" style="position:relative;width:110px;height:110px;">
+                        <img id="profile-picture-preview" src="" alt="Profile Picture" style="display:none;width:110px;height:110px;border-radius:50%;object-fit:cover;box-shadow:0 2px 8px #0001;">
+                        <div id="profile-initial-avatar" style="display:none;width:110px;height:110px;border-radius:50%;background:#4a90e2;color:#fff;display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:700;box-shadow:0 2px 8px #0001;"></div>
+                    </div>
+                    <input type="file" id="profile-picture" name="profile-picture" accept="image/*" style="margin-bottom:8px;">
+                    <small>Upload a profile picture (JPG, PNG)</small>
+                </div>
+                <div class="form-group">
+                    <label for="profile-name">Name</label>
+                    <input type="text" id="profile-name" name="profile-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="profile-email">Email</label>
+                    <input type="email" id="profile-email" name="profile-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="profile-linkedin">LinkedIn</label>
+                    <input type="url" id="profile-linkedin" name="profile-linkedin" placeholder="https://linkedin.com/in/yourprofile" style="width:100%;">
+                </div>
+                <div class="form-group">
+                    <label for="profile-cv">CV (PDF Link or Upload)</label>
+                    <input type="url" id="profile-cv-link" name="profile-cv-link" placeholder="Paste CV link here" style="width:100%;margin-bottom:8px;">
+                    <input type="file" id="profile-cv-file" name="profile-cv-file" accept="application/pdf">
+                    <small id="cv-upload-status"></small>
+                </div>
+                <div class="form-error" id="profile-error"></div>
+                <button type="submit" class="btn-primary">Save Changes</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 JobSearch. All rights reserved.</p>
+    </footer>
+    <script src="assets/js/main.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+        const user = await getCurrentUser();
+        if (!user) return;
+        // Load user profile data from backend
+        document.getElementById('profile-name').value = user.username || '';
+        document.getElementById('profile-email').value = user.email || '';
+        document.getElementById('profile-linkedin').value = user.linkedin || '';
+        document.getElementById('profile-cv-link').value = user.cvLink || '';
+        // Profile picture (if available)
+        const profilePicturePreview = document.getElementById('profile-picture-preview');
+        const profileInitialAvatar = document.getElementById('profile-initial-avatar');
+        function showProfileAvatar() {
+            if (user.profilePicture) {
+                profilePicturePreview.src = user.profilePicture;
+                profilePicturePreview.style.display = 'block';
+                profileInitialAvatar.style.display = 'none';
+            } else {
+                const initial = user.username ? user.username.charAt(0).toUpperCase() : '?';
+                profileInitialAvatar.textContent = initial;
+                profileInitialAvatar.style.display = 'flex';
+                profilePicturePreview.style.display = 'none';
+            }
+        }
+        showProfileAvatar();
+        // Handle profile picture upload (client-side preview only)
+        document.getElementById('profile-picture').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    user.profilePicture = evt.target.result;
+                    showProfileAvatar();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        // Handle CV file upload (client-side preview only)
+        document.getElementById('profile-cv-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const status = document.getElementById('cv-upload-status');
+            if (file && file.type === 'application/pdf') {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    user.cvFile = evt.target.result;
+                    status.textContent = 'CV uploaded.';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                status.textContent = 'Please upload a PDF file.';
+            }
+        });
+        // Save profile changes
+        document.getElementById('profile-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const error = document.getElementById('profile-error');
+            const name = document.getElementById('profile-name').value;
+            const email = document.getElementById('profile-email').value;
+            const linkedin = document.getElementById('profile-linkedin').value;
+            const cvLink = document.getElementById('profile-cv-link').value;
+            if (!name || !email) {
+                error.textContent = 'Name and email are required.';
+                error.style.display = 'block';
+                return;
+            }
+            // Update user data via API
+            const updatedUser = {
+                username: name,
+                email: email,
+                linkedin: linkedin,
+                cvLink: cvLink,
+                profilePicture: user.profilePicture,
+                cvFile: user.cvFile
+            };
+            const res = await fetch('http://localhost:8000/api/users/' + user.id + '/', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(updatedUser)
+            });
+            if (res.ok) {
+                error.textContent = 'Profile updated successfully!';
+                error.style.color = 'green';
+                error.style.display = 'block';
+            } else {
+                error.textContent = 'Failed to update profile.';
+                error.style.color = 'red';
+                error.style.display = 'block';
+            }
+        });
+    });
+    </script>
+    <script type="module" src="assets/js/userjs/auth.js"></script>
+</body>
+</html>

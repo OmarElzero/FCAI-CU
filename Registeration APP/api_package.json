@@ -1,0 +1,1119 @@
+{
+  "info": {
+    "name": "FCAI Student Activity Registration API",
+    "description": "Complete API collection for FCAI Cairo University Student Activity Registration App",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "student_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "activity_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "meeting_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "reservation_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register Student",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('student_token', response.token);",
+                  "    console.log('Student token set:', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"student1\",\n    \"email\": \"student1@fcai.cu.edu.eg\",\n    \"first_name\": \"Ahmed\",\n    \"last_name\": \"Hassan\",\n    \"password\": \"student123\",\n    \"password_confirm\": \"student123\",\n    \"role\": \"student\",\n    \"student_id\": \"20210001\",\n    \"phone\": \"+201234567890\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register/",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register", ""]
+            }
+          }
+        },
+        {
+          "name": "Register Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('admin_token', response.token);",
+                  "    console.log('Admin token set:', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"admin1\",\n    \"email\": \"admin1@fcai.cu.edu.eg\",\n    \"first_name\": \"Sara\",\n    \"last_name\": \"Mohamed\",\n    \"password\": \"admin123\",\n    \"password_confirm\": \"admin123\",\n    \"role\": \"admin\",\n    \"phone\": \"+201987654321\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register/",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register", ""]
+            }
+          }
+        },
+        {
+          "name": "Login Student",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('student_token', response.token);",
+                  "    console.log('Student token updated:', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"student1\",\n    \"password\": \"student123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login/",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login", ""]
+            }
+          }
+        },
+        {
+          "name": "Login Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('admin_token', response.token);",
+                  "    console.log('Admin token updated:', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"admin1\",\n    \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login/",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login", ""]
+            }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/profile/",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "profile", ""]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/logout/",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "logout", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Activities",
+      "item": [
+        {
+          "name": "Submit Activity (Student)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('activity_id', response.activity_id);",
+                  "    console.log('Activity ID set:', response.activity_id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"team_name\": \"AI Innovation Club\",\n    \"team_description\": \"A dynamic student club focused on artificial intelligence research, innovation projects, and knowledge sharing among FCAI students.\",\n    \"previous_contributions\": \"- Organized 3 workshops on machine learning fundamentals\\n- Hosted 2 guest lectures by industry experts\\n- Participated in Cairo AI Challenge 2024\\n- Created online tutorial series for Python programming\",\n    \"expected_contribution\": \"- Host annual FCAI AI Conference with 200+ attendees\\n- Establish AI mentorship program for junior students\\n- Develop open-source AI tools for university projects\\n- Collaborate with industry partners for internship opportunities\\n- Create AI research publication opportunities\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/activities/submit/",
+              "host": ["{{base_url}}"],
+              "path": ["activities", "submit", ""]
+            }
+          }
+        },
+        {
+          "name": "Submit Activity with Logo (Form Data)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    console.log('Activity with logo submitted:', response.activity_id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "team_name",
+                  "value": "Robotics Excellence Team",
+                  "type": "text"
+                },
+                {
+                  "key": "team_description",
+                  "value": "Advanced robotics team focusing on autonomous systems and IoT integration",
+                  "type": "text"
+                },
+                {
+                  "key": "previous_contributions",
+                  "value": "Built autonomous navigation robot for campus tours, Won 1st place in Egyptian Robotics Competition",
+                  "type": "text"
+                },
+                {
+                  "key": "expected_contribution",
+                  "value": "Establish robotics lab, Mentor junior students, Organize robotics workshops",
+                  "type": "text"
+                },
+                {
+                  "key": "logo",
+                  "type": "file",
+                  "src": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/activities/submit/",
+              "host": ["{{base_url}}"],
+              "path": ["activities", "submit", ""]
+            }
+          }
+        },
+        {
+          "name": "Get My Activities (Student)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/activities/my-activities/",
+              "host": ["{{base_url}}"],
+              "path": ["activities", "my-activities", ""]
+            }
+          }
+        },
+        {
+          "name": "List All Activities (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/activities/admin/list/?status=pending",
+              "host": ["{{base_url}}"],
+              "path": ["activities", "admin", "list", ""],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Activity Detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/activities/{{activity_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["activities", "{{activity_id}}", ""]
+            }
+          }
+        },
+        {
+          "name": "Approve Activity (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"approved\",\n    \"admin_notes\": \"Excellent initiative! The AI Innovation Club shows great potential and aligns perfectly with our faculty's vision. Approved for implementation with full support.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/activities/admin/review/{{activity_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["activities", "admin", "review", "{{activity_id}}", ""]
+            }
+          }
+        },
+        {
+          "name": "Request Meeting (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"meeting_requested\",\n    \"admin_notes\": \"Great proposal! I'd like to schedule a meeting to discuss implementation timeline, resource requirements, and potential collaboration opportunities.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/activities/admin/review/{{activity_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["activities", "admin", "review", "{{activity_id}}", ""]
+            }
+          }
+        },
+        {
+          "name": "Public Timeline",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/activities/timeline/?limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["activities", "timeline", ""],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Activity Statistics (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/activities/admin/stats/",
+              "host": ["{{base_url}}"],
+              "path": ["activities", "admin", "stats", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Meetings",
+      "item": [
+        {
+          "name": "Request Meeting (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('meeting_id', response.meeting_id);",
+                  "    console.log('Meeting ID set:', response.meeting_id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"activity\": {{activity_id}},\n    \"student\": 2,\n    \"admin_notes_before\": \"I would like to discuss the implementation timeline, budget requirements, and potential faculty support for your AI Innovation Club. Please review the attached resources before our meeting.\",\n    \"time_slots\": [\n        {\n            \"proposed_datetime\": \"2025-09-26T10:00:00Z\"\n        },\n        {\n            \"proposed_datetime\": \"2025-09-26T14:00:00Z\"\n        },\n        {\n            \"proposed_datetime\": \"2025-09-27T11:00:00Z\"\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/meetings/admin/request/",
+              "host": ["{{base_url}}"],
+              "path": ["meetings", "admin", "request", ""]
+            }
+          }
+        },
+        {
+          "name": "Student Meeting List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/meetings/student/list/",
+              "host": ["{{base_url}}"],
+              "path": ["meetings", "student", "list", ""]
+            }
+          }
+        },
+        {
+          "name": "Admin Meeting List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/meetings/admin/list/",
+              "host": ["{{base_url}}"],
+              "path": ["meetings", "admin", "list", ""]
+            }
+          }
+        },
+        {
+          "name": "Meeting Detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/meetings/{{meeting_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["meetings", "{{meeting_id}}", ""]
+            }
+          }
+        },
+        {
+          "name": "Select Time Slot (Student)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"time_slot_id\": 1,\n    \"student_notes\": \"Thank you for considering our proposal! I'm available for the first time slot and look forward to discussing our vision for the AI Innovation Club. I've prepared a presentation covering our implementation plan and resource requirements.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/meetings/student/select-slot/{{meeting_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["meetings", "student", "select-slot", "{{meeting_id}}", ""]
+            }
+          }
+        },
+        {
+          "name": "Update Meeting Outcome - Approved (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"outcome\": \"approved\",\n    \"admin_notes_after\": \"Excellent meeting! The team demonstrated strong technical knowledge and clear vision. The AI Innovation Club is approved with the following support: dedicated lab space, initial funding of 10,000 EGP, and faculty mentor assignment. Next steps: Submit detailed budget proposal and begin recruitment.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/meetings/admin/outcome/{{meeting_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["meetings", "admin", "outcome", "{{meeting_id}}", ""]
+            }
+          }
+        },
+        {
+          "name": "Meeting Statistics (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/meetings/admin/stats/",
+              "host": ["{{base_url}}"],
+              "path": ["meetings", "admin", "stats", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reservations",
+      "item": [
+        {
+          "name": "List Locations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reservations/locations/",
+              "host": ["{{base_url}}"],
+              "path": ["reservations", "locations", ""]
+            }
+          }
+        },
+        {
+          "name": "List Carnival Locations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reservations/locations/?type=carnival",
+              "host": ["{{base_url}}"],
+              "path": ["reservations", "locations", ""],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "carnival"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Check Available Slots",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reservations/available-slots/?date=2025-09-30&location=1",
+              "host": ["{{base_url}}"],
+              "path": ["reservations", "available-slots", ""],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2025-09-30"
+                },
+                {
+                  "key": "location",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Reservation (Student)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('reservation_id', response.reservation_id);",
+                  "    console.log('Reservation ID set:', response.reservation_id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"activity\": {{activity_id}},\n    \"location\": 1,\n    \"start_datetime\": \"2025-09-30T14:00:00Z\",\n    \"end_datetime\": \"2025-09-30T17:00:00Z\",\n    \"reservation_type\": \"regular\",\n    \"expected_attendees\": 75,\n    \"purpose\": \"AI Innovation Club Launch Event - Introductory workshop on machine learning fundamentals with hands-on coding session\",\n    \"special_requirements\": \"High-speed internet, projector, microphone system, whiteboard, power outlets for laptops, refreshment setup area\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/reservations/create/",
+              "host": ["{{base_url}}"],
+              "path": ["reservations", "create", ""]
+            }
+          }
+        },
+        {
+          "name": "Create Carnival Reservation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"activity\": {{activity_id}},\n    \"location\": 4,\n    \"start_datetime\": \"2025-10-03T10:00:00Z\",\n    \"end_datetime\": \"2025-10-03T16:00:00Z\",\n    \"reservation_type\": \"carnival\",\n    \"expected_attendees\": 150,\n    \"purpose\": \"Thursday Carnival: AI Robotics Demo - Interactive demonstrations of autonomous robots and AI-powered systems\",\n    \"special_requirements\": \"Large space for robot demonstrations, power supply for equipment, safety barriers, sound system for announcements\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/reservations/create/",
+              "host": ["{{base_url}}"],
+              "path": ["reservations", "create", ""]
+            }
+          }
+        },
+        {
+          "name": "My Reservations (Student)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reservations/my-reservations/",
+              "host": ["{{base_url}}"],
+              "path": ["reservations", "my-reservations", ""]
+            }
+          }
+        },
+        {
+          "name": "Admin Reservation List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reservations/admin/list/?status=pending",
+              "host": ["{{base_url}}"],
+              "path": ["reservations", "admin", "list", ""],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reservation Detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reservations/{{reservation_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["reservations", "{{reservation_id}}", ""]
+            }
+          }
+        },
+        {
+          "name": "Approve Reservation (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"approved\",\n    \"admin_notes\": \"Reservation approved! The AI Innovation Club launch event is well-planned and will benefit our students. All requested facilities will be prepared. Please coordinate with the technical support team for equipment setup.\",\n    \"priority_score\": 8\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/reservations/admin/review/{{reservation_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["reservations", "admin", "review", "{{reservation_id}}", ""]
+            }
+          }
+        },
+        {
+          "name": "Get Reservation Conflicts (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reservations/admin/conflicts/",
+              "host": ["{{base_url}}"],
+              "path": ["reservations", "admin", "conflicts", ""]
+            }
+          }
+        },
+        {
+          "name": "Resolve Conflict (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"approved_reservation_id\": {{reservation_id}},\n    \"resolution_status\": \"resolved\",\n    \"resolution_notes\": \"Conflict resolved in favor of AI Innovation Club due to educational impact and prior approval status. Alternative arrangements suggested for conflicting reservation.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/reservations/admin/resolve-conflict/1/",
+              "host": ["{{base_url}}"],
+              "path": ["reservations", "admin", "resolve-conflict", "1", ""]
+            }
+          }
+        },
+        {
+          "name": "Reservation Statistics (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reservations/admin/stats/",
+              "host": ["{{base_url}}"],
+              "path": ["reservations", "admin", "stats", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Workflow Tests",
+      "item": [
+        {
+          "name": "Complete Student Workflow",
+          "item": [
+            {
+              "name": "1. Register as Student",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Registration successful', function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "if (pm.response.code === 201) {",
+                      "    const response = pm.response.json();",
+                      "    pm.collectionVariables.set('workflow_student_token', response.token);",
+                      "    pm.test('Token received', function () {",
+                      "        pm.expect(response.token).to.be.a('string');",
+                      "    });",
+                      "}"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"workflow_student\",\n    \"email\": \"workflow@fcai.cu.edu.eg\",\n    \"first_name\": \"Omar\",\n    \"last_name\": \"Ali\",\n    \"password\": \"workflow123\",\n    \"password_confirm\": \"workflow123\",\n    \"role\": \"student\",\n    \"student_id\": \"20210099\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/auth/register/",
+                  "host": ["{{base_url}}"],
+                  "path": ["auth", "register", ""]
+                }
+              }
+            },
+            {
+              "name": "2. Submit Activity",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Activity submitted', function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "if (pm.response.code === 201) {",
+                      "    const response = pm.response.json();",
+                      "    pm.collectionVariables.set('workflow_activity_id', response.activity_id);",
+                      "}"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Token {{workflow_student_token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"team_name\": \"Cybersecurity Warriors\",\n    \"team_description\": \"Student-led cybersecurity team focused on ethical hacking, security research, and awareness campaigns\",\n    \"previous_contributions\": \"Conducted security audits, organized awareness workshops\",\n    \"expected_contribution\": \"Establish cybersecurity lab, train students in ethical hacking, participate in CTF competitions\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/activities/submit/",
+                  "host": ["{{base_url}}"],
+                  "path": ["activities", "submit", ""]
+                }
+              }
+            },
+            {
+              "name": "3. Check Timeline (Should be Empty)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Timeline accessible', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "const response = pm.response.json();",
+                      "pm.test('Activity not yet on timeline', function () {",
+                      "    pm.expect(response.count).to.be.at.least(0);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/activities/timeline/",
+                  "host": ["{{base_url}}"],
+                  "path": ["activities", "timeline", ""]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Complete Admin Workflow",
+          "item": [
+            {
+              "name": "1. Login as Admin",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "    const response = pm.response.json();",
+                      "    pm.collectionVariables.set('workflow_admin_token', response.token);",
+                      "}"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"admin123\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/auth/login/",
+                  "host": ["{{base_url}}"],
+                  "path": ["auth", "login", ""]
+                }
+              }
+            },
+            {
+              "name": "2. Review and Approve Activity",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Activity approved', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Token {{workflow_admin_token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"status\": \"approved\",\n    \"admin_notes\": \"Excellent cybersecurity initiative! Approved with full support.\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/activities/admin/review/{{workflow_activity_id}}/",
+                  "host": ["{{base_url}}"],
+                  "path": ["activities", "admin", "review", "{{workflow_activity_id}}", ""]
+                }
+              }
+            },
+            {
+              "name": "3. Verify Timeline Updated",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Timeline updated automatically', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "const response = pm.response.json();",
+                      "pm.test('Activity now appears on timeline', function () {",
+                      "    pm.expect(response.count).to.be.at.least(1);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/activities/timeline/",
+                  "host": ["{{base_url}}"],
+                  "path": ["activities", "timeline", ""]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

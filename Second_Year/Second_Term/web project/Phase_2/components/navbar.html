@@ -1,0 +1,35 @@
+<nav class="navbar">
+    <div class="container navbar-container">
+        <div class="navbar-brand">
+            <a href="index.html" class="logo">
+                <i class="fas fa-briefcase"></i>
+                JobSearch
+            </a>
+        </div>
+        <div class="navbar-menu" id="navbar-menu">
+            <div class="navbar-start">
+                <a href="index.html" class="navbar-item" id="home-link">Home</a>
+                <a href="features/user/search_jobs.html" class="navbar-item" id="search-jobs-link">Search Jobs</a>
+                <a href="features/user/applied_jobs.html" class="navbar-item" id="applied-jobs-link">Applied Jobs</a>
+                <a href="features/admin/dashboard.html" class="navbar-item admin-only" id="dashboard-link">Dashboard</a>
+                <a href="features/admin/add_job.html" class="navbar-item admin-only" id="add-job-link">Add Job</a>
+            </div>
+            <div class="navbar-end">
+                <div class="logged-out-only">
+                    <a href="login.html" class="navbar-item">Login</a>
+                    <a href="signup.html" class="navbar-item btn-primary">Sign Up</a>
+                </div>
+                <div class="logged-in-only" style="display: none;">
+                    <span class="navbar-item" id="username-display"></span>
+                    <a href="profile.html" class="navbar-item" id="profile-link">Profile</a>
+                    <a href="#" class="navbar-item" id="logout-link">Logout</a>
+                </div>
+            </div>
+        </div>
+        <div class="navbar-burger" id="navbar-burger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</nav>

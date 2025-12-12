@@ -1,0 +1,6 @@
+# User Prompt
+
+"Show me where our website visitors are coming from around the world and help me understand which countries are performing best for our e-commerce business."
+
+## Business Context
+An e-commerce marketing director needs to analyze global audience patterns to optimize international marketing spend and identify high-potential markets for expansion. They want to see geographic distribution of users, sessions, and engagement metrics to make data-driven decisions about regional marketing strategies.

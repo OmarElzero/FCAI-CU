@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Test - JobSearch</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+    <div id="navbar-container"></div>
+    
+    <main class="container">
+        <section class="auth-test">
+            <h1>Authentication Test Page</h1>
+            <div id="auth-status">Loading...</div>
+            
+            <div class="test-buttons">
+                <button id="check-auth-btn" class="btn-primary">Check Auth Status</button>
+                <button id="clear-storage-btn" class="btn-secondary">Clear Local Storage</button>
+                <button id="test-login-btn" class="btn-primary">Test Login Page</button>
+                <button id="test-admin-btn" class="btn-primary">Test Admin Dashboard</button>
+                <button id="test-user-btn" class="btn-primary">Test User Search</button>
+                <button id="test-applied-btn" class="btn-primary">Test Applied Jobs</button>
+                <button id="test-add-job-btn" class="btn-primary">Test Add Job</button>
+            </div>
+            
+            <div id="debug-info">
+                <h3>Debug Information:</h3>
+                <pre id="debug-output"></pre>
+            </div>
+        </section>
+    </main>
+
+    <script src="assets/js/main.js"></script>
+    <script type="module">
+        import { getCurrentUser } from './assets/js/userjs/api.js';
+        import { navigateTo } from './assets/js/userjs/navigation.js';
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            const authStatus = document.getElementById('auth-status');
+            const debugOutput = document.getElementById('debug-output');
+            
+            async function updateAuthStatus() {
+                try {
+                    const user = await getCurrentUser();
+                    if (user) {
+                        authStatus.innerHTML = `
+                            <div class="auth-success">
+                                <h3>✅ Authenticated</h3>
+                                <p><strong>Username:</strong> ${user.username}</p>
+                                <p><strong>Email:</strong> ${user.email || 'N/A'}</p>
+                                <p><strong>Role:</strong> ${user.is_company ? 'Company Admin' : 'Job Seeker'}</p>
+                                <p><strong>ID:</strong> ${user.id}</p>
+                            </div>
+                        `;
+                    } else {
+                        authStatus.innerHTML = `
+                            <div class="auth-error">
+                                <h3>❌ Not Authenticated</h3>
+                                <p>No user session found</p>
+                            </div>
+                        `;
+                    }
+                    
+                    debugOutput.textContent = JSON.stringify({
+                        user,
+                        localStorage: localStorage.getItem('user'),
+                        currentPath: window.location.pathname,
+                        queryParams: Object.fromEntries(new URLSearchParams(window.location.search))
+                    }, null, 2);
+                } catch (error) {
+                    authStatus.innerHTML = `
+                        <div class="auth-error">
+                            <h3>❌ Error</h3>
+                            <p>${error.message}</p>
+                        </div>
+                    `;
+                    debugOutput.textContent = `Error: ${error.message}`;
+                }
+            }
+            
+            // Initial status check
+            await updateAuthStatus();
+            
+            // Button event listeners
+            document.getElementById('check-auth-btn').addEventListener('click', updateAuthStatus);
+            
+            document.getElementById('clear-storage-btn').addEventListener('click', function() {
+                localStorage.clear();
+                updateAuthStatus();
+            });
+            
+            document.getElementById('test-login-btn').addEventListener('click', function() {
+                navigateTo('login');
+            });
+            
+            document.getElementById('test-admin-btn').addEventListener('click', function() {
+                navigateTo('dashboard');
+            });
+            
+            document.getElementById('test-user-btn').addEventListener('click', function() {
+                navigateTo('search');
+            });
+            
+            document.getElementById('test-applied-btn').addEventListener('click', function() {
+                navigateTo('applied');
+            });
+            
+            document.getElementById('test-add-job-btn').addEventListener('click', function() {
+                navigateTo('add-job');
+            });
+        });
+    </script>
+    
+    <style>
+        .auth-test {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .test-buttons {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .auth-success {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .auth-error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #f5c6cb;
+        }
+        
+        #debug-info {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        #debug-output {
+            background: #ffffff;
+            padding: 1rem;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,284 @@
+// Authentication handling for JobSearch application
+// This file handles login, registration, and session management
+
+import { 
+    loginUser as loginUserAPI, 
+    registerUser as registerUserAPI, 
+    logoutUser as logoutUserAPI, 
+    getCurrentUser as getCurrentUserAPI 
+} from './api.js';
+
+/**
+ * Handle login form submission
+ * @param {Event} e - Form submit event
+ */
+async function handleLogin(e) {
+    e.preventDefault();
+    
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const companyAdmin = document.getElementById('company-admin')?.checked || false;
+    const companyName = companyAdmin ? document.getElementById('company-name')?.value : null;
+    
+    const errorElement = document.getElementById('login-error');
+    
+    // Clear previous errors
+    if (errorElement) errorElement.textContent = '';
+    
+    // Basic validation
+    if (!username || !password) {
+        if (errorElement) errorElement.textContent = 'Please enter both username and password';
+        return;
+    }
+
+    // Additional validation for company admins
+    if (companyAdmin && !companyName) {
+        if (errorElement) errorElement.textContent = 'Please enter company name';
+        return;
+    }
+    
+    try {
+        // Call the login API
+        const user = await loginUserAPI(username, password);
+        
+        // Store minimal user info in localStorage for UI purposes only
+        // The actual authentication is handled by cookies/sessions
+        if (user) {
+            localStorage.setItem('user', JSON.stringify({
+                id: user.id,
+                username: user.username,
+                is_company: user.is_company
+            }));
+            
+            // Redirect based on user role
+            const redirectUrl = new URLSearchParams(window.location.search).get('redirect');
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+            } else if (user.is_company) {
+                window.location.href = '/ass/features/admin/dashboard.html';
+            } else {
+                window.location.href = '/ass/features/user/search_jobs.html';
+            }
+        }
+    } catch (error) {
+        // Show error message
+        if (errorElement) {
+            errorElement.textContent = error.message || 'Invalid username or password';
+        }
+    }
+}
+
+/**
+ * Handle signup form submission
+ * @param {Event} e - Form submit event
+ */
+async function handleSignup(e) {
+    e.preventDefault();
+    
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password')?.value;
+    const isCompany = document.getElementById('is-company')?.checked || false;
+    const companyName = isCompany ? document.getElementById('company-name')?.value : null;
+    
+    const errorElement = document.getElementById('signup-error');
+    
+    // Clear previous errors
+    if (errorElement) errorElement.textContent = '';
+    
+    // Basic validations
+    if (!username || !email || !password) {
+        if (errorElement) errorElement.textContent = 'Please fill all required fields';
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        if (errorElement) errorElement.textContent = 'Passwords do not match';
+        return;
+    }
+    
+    if (isCompany && !companyName) {
+        if (errorElement) errorElement.textContent = 'Please enter company name';
+        return;
+    }
+    
+    try {
+        // Prepare user data
+        const userData = {
+            username,
+            email,
+            password,
+            is_company: isCompany,
+            company_name: companyName
+        };
+        
+        // Call the register API
+        const user = await registerUserAPI(userData);
+        
+        if (user) {
+            // Auto-login after registration
+            const loginResponse = await loginUserAPI(username, password);
+            
+            if (loginResponse) {
+                localStorage.setItem('user', JSON.stringify({
+                    id: loginResponse.id,
+                    username: loginResponse.username,
+                    is_company: loginResponse.is_company
+                }));
+                
+                // Redirect based on user type
+                if (loginResponse.is_company) {
+                    window.location.href = '/ass/features/admin/dashboard.html';
+                } else {
+                    window.location.href = '/ass/features/user/search_jobs.html';
+                }
+            }
+        }
+    } catch (error) {
+        // Show error message
+        if (errorElement) {
+            errorElement.textContent = error.message || 'Registration failed';
+        }
+    }
+}
+
+/**
+ * Handle logout
+ */
+async function handleLogout() {
+    try {
+        await logoutUserAPI();
+        // Clear local storage
+        localStorage.removeItem('user');
+        // Redirect to login page
+        window.location.href = '/ass/login.html';
+    } catch (error) {
+        console.error('Logout failed:', error);
+        // Force redirect to login page even if API fails
+        localStorage.removeItem('user');
+        window.location.href = '/ass/login.html';
+    }
+}
+
+/**
+ * Check if user is authenticated and redirect if needed
+ * @param {Object} options - Options for authentication check
+ * @param {boolean} options.requireAuth - Whether authentication is required
+ * @param {boolean} options.requireCompany - Whether company role is required
+ * @param {boolean} options.requireJobSeeker - Whether job seeker role is required
+ * @param {Function} options.onAuthenticated - Callback for when user is authenticated
+ */
+async function checkAuth({
+    requireAuth = true,
+    requireCompany = false,
+    requireJobSeeker = false,
+    onAuthenticated = null
+} = {}) {
+    try {
+        const user = await getCurrentUserAPI();
+        
+        if (requireAuth && !user) {
+            // Redirect to login if auth is required but user is not logged in
+            window.location.href = '/ass/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+            return;
+        }
+        
+        if (user) {
+            // Check role requirements
+            if (requireCompany && !user.is_company) {
+                window.location.href = '/ass/features/user/search_jobs.html';
+                return;
+            }
+            
+            if (requireJobSeeker && user.is_company) {
+                window.location.href = '/ass/features/admin/dashboard.html';
+                return;
+            }
+            
+            // Update UI based on authentication status
+            document.body.classList.add('authenticated');
+            
+            if (user.is_company) {
+                document.body.classList.add('company-user');
+            } else {
+                document.body.classList.add('job-seeker');
+            }
+            
+            // Call the onAuthenticated callback if provided
+            if (onAuthenticated && typeof onAuthenticated === 'function') {
+                onAuthenticated(user);
+            }
+        } else {
+            // Update UI for unauthenticated user
+            document.body.classList.remove('authenticated', 'company-user', 'job-seeker');
+        }
+    } catch (error) {
+        console.error('Auth check failed:', error);
+        
+        if (requireAuth) {
+            // Redirect to login if auth check fails and auth is required
+            window.location.href = '/ass/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+        }
+    }
+}
+
+// Initialize auth check on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Setup login form handler
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+    }
+    
+    // Setup signup form handler
+    const signupForm = document.getElementById('signup-form');
+    if (signupForm) {
+        signupForm.addEventListener('submit', handleSignup);
+    }
+    
+    // Setup logout buttons
+    const logoutButtons = document.querySelectorAll('.logout-button');
+    logoutButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleLogout();
+        });
+    });
+    
+    // Toggle company name field visibility
+    const companyAdminCheckbox = document.getElementById('company-admin');
+    const companyNameContainer = document.getElementById('company-name-container');
+    
+    if (companyAdminCheckbox && companyNameContainer) {
+        companyAdminCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                companyNameContainer.style.display = 'block';
+            } else {
+                companyNameContainer.style.display = 'none';
+            }
+        });
+    }
+    
+    // Same for signup page
+    const isCompanyCheckbox = document.getElementById('is-company');
+    const companyField = document.getElementById('company-field');
+    
+    if (isCompanyCheckbox && companyField) {
+        isCompanyCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                companyField.classList.add('visible');
+            } else {
+                companyField.classList.remove('visible');
+            }
+        });
+    }
+});
+
+// Export functions for use in other modules
+export {
+    handleLogin,
+    handleSignup,
+    handleLogout,
+    checkAuth
+};

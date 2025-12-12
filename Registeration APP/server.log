@@ -1,0 +1,19 @@
+nohup: ignoring input
+Watching for file changes with StatReloader
+[24/Sep/2025 16:40:26] "GET /api/activities/timeline/ HTTP/1.1" 200 24
+/root/FCAI-CU/Registeration APP/venv/lib/python3.10/site-packages/rest_framework/pagination.py:207: UnorderedObjectListWarning: Pagination may yield inconsistent results with an unordered object_list: <class 'reservations.models.Location'> QuerySet.
+  paginator = self.django_paginator_class(queryset, page_size)
+[24/Sep/2025 16:40:43] "GET /api/reservations/locations/ HTTP/1.1" 200 1212
+[24/Sep/2025 16:41:05] "POST /api/auth/register/ HTTP/1.1" 201 308
+/root/FCAI-CU/Registeration APP/fcai_registration_app/settings.py changed, reloading.
+Performing system checks...
+
+System check identified no issues (0 silenced).
+September 24, 2025 - 16:40:14
+Django version 5.2.6, using settings 'fcai_registration_app.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
+
+WARNING: This is a development server. Do not use it in a production setting. Use a production WSGI or ASGI server instead.
+For more information on production servers see: https://docs.djangoproject.com/en/5.2/howto/deployment/
+Watching for file changes with StatReloader

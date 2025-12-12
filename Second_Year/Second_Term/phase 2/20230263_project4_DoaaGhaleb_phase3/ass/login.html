@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - JobSearch</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="auth-page">
+    <div id="navbar-container"></div>
+    <script type="module">
+    import { checkAuth } from './assets/js/userjs/auth.js';
+    
+    // Check if user is already logged in and redirect to appropriate page
+    document.addEventListener('DOMContentLoaded', async function() {
+        checkAuth({
+            requireAuth: false,
+            onAuthenticated: function(user) {
+                // If user is already logged in, redirect to appropriate page
+                if (user.is_company) {
+                    window.location.href = 'features/admin/dashboard.html';
+                } else {
+                    window.location.href = 'features/user/search_jobs.html';
+                }
+            }
+        });
+    });
+    </script>
+
+    <main class="container">
+        <section class="auth-container">
+            <div class="auth-header">
+                <i class="fas fa-briefcase auth-icon"></i>
+                <h1>Welcome Back</h1>
+                <p class="auth-subtitle">Enter your credentials to access your account</p>
+            </div>
+            
+            <form id="login-form" class="auth-form">
+                <div class="form-group">
+                    <label for="username"><i class="fas fa-user"></i> Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                
+                <div class="form-options">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="remember-me" name="remember-me">
+                        <label for="remember-me">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                </div>
+                
+                <div class="form-error" id="login-error"></div>
+                
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+            
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="signup.html">Sign up now</a></p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 JobSearch. All rights reserved.</p>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+    <script type="module" src="assets/js/userjs/auth.js"></script>
+</body>
+</html>

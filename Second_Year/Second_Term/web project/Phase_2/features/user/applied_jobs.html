@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Applications - JobSearch</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/user.css">
+    <!-- <script type="module">
+        import { setupPageProtection } from '../../assets/js/userjs/page-protection.js';
+        setupPageProtection({
+            requireAuth: true,
+            // requireJobSeeker: true, // Only job seekers can view applications
+            // redirectTo: 'dashboard'
+        });
+    </script> -->
+</head>
+<body class="requires-auth">
+    <!-- Navbar will be dynamically loaded here -->
+    <div id="navbar-container"></div>
+
+    <main class="container">
+        <section class="user-header">
+            <h1>My Job Applications</h1>
+            <p>Track the status of your job applications</p>
+            <a href="search_jobs.html" class="btn-primary">Search More Jobs</a>
+        </section>
+
+        <section class="applications-section">
+            <div class="filter-controls">
+                <select id="application-status-filter">
+                    <option value="all">All Applications</option>
+                    <option value="pending">Pending</option>
+                    <option value="reviewed">Reviewed</option>
+                    <option value="interviewed">Interviewed</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+                <input type="text" id="applications-search" placeholder="Search applications...">
+            </div>
+            
+            <div id="applications-container" class="applications-list">
+                <!-- Application cards will be loaded here -->
+                <p id="no-applications-message" style="display: none;">You haven't applied to any jobs yet. Start your job search now!</p>
+            </div>
+        </section>
+        
+        <div id="application-details-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <div id="application-details-container">
+                    <!-- Application details will be loaded here -->
+                </div>
+                <div class="modal-actions">
+                    <button id="withdraw-application-btn" class="btn-danger">Withdraw Application</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 JobSearch. All rights reserved.</p>
+    </footer>
+
+    <script src="../../assets/js/main.js"></script>
+    <script type="module" src="../../assets/js/userjs/user.js"></script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Applicants - JobSearch</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/admin.css">
+    <script type="module">
+        import { setupPageProtection } from '../../assets/js/userjs/page-protection.js';
+        setupPageProtection({
+            requireAuth: true,
+            requireCompany: true,
+            redirectTo: 'search'
+        });
+    </script>
+</head>
+<body class="requires-auth requires-company">
+    <div id="navbar-container"></div>
+    <main class="container">
+        <section class="admin-header">
+            <h1>Applicants for Job</h1>
+            <a href="dashboard.html" class="btn-secondary">Back to Dashboard</a>
+        </section>
+        <section id="job-info-section" class="job-management">
+            <!-- Job info will be loaded here -->
+        </section>
+        <section id="applicants-section" class="job-management">
+            <h2>Applicants</h2>
+            <div class="filter-controls" style="margin-bottom:20px;">
+                <input type="text" id="filter-name" placeholder="Search by name..." style="margin-right:10px;">
+                <select id="filter-experience">
+                    <option value="">All Experience</option>
+                    <option value="0">0-1 years</option>
+                    <option value="1">1-3 years</option>
+                    <option value="3">3-5 years</option>
+                    <option value="5">5+ years</option>
+                </select>
+                <button id="filter-btn" class="btn-primary" style="margin-left:10px;">Filter</button>
+            </div>
+            <div id="applicants-list">
+                <!-- Applicants will be loaded here -->
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 JobSearch. All rights reserved.</p>
+    </footer>
+    <script src="../../assets/js/main.js"></script>
+    <script>
+    let allApplications = [];
+    let allUsers = [];
+    let job = null;
+    document.addEventListener('DOMContentLoaded', async function() {
+        const params = new URLSearchParams(window.location.search);
+        const jobId = params.get('jobId');
+        if (!jobId) {
+            document.getElementById('job-info-section').innerHTML = '<p>Job not found.</p>';
+            document.getElementById('applicants-list').innerHTML = '';
+            return;
+        }
+        // Fetch job from API
+        const jobs = await fetch('http://localhost:8000/api/jobs/', { credentials: 'include' }).then(r => r.json());
+        job = jobs.find(j => j.id == jobId);
+        if (!job) {
+            document.getElementById('job-info-section').innerHTML = '<p>Job not found.</p>';
+            document.getElementById('applicants-list').innerHTML = '';
+            return;
+        }
+        document.getElementById('job-info-section').innerHTML = `
+            <h2>${job.title}</h2>
+            <p><strong>Company:</strong> ${job.company}</p>
+            <p><strong>Salary:</strong> ${job.salary}</p>
+            <p><strong>Status:</strong> ${job.status}</p>
+            <p><strong>Experience Required:</strong> ${job.experience} years</p>
+            <p><strong>Description:</strong> ${job.description}</p>
+        `;
+        // Load applicants from API
+        allApplications = (await fetch('http://localhost:8000/api/applications/', { credentials: 'include' }).then(r => r.json())).filter(app => app.job == jobId);
+        allUsers = await fetch('http://localhost:8000/api/users/', { credentials: 'include' }).then(r => r.json());
+        renderApplicants(allApplications, allUsers);
+        // Filter events
+        document.getElementById('filter-btn').onclick = function() {
+            applyApplicantFilters();
+        };
+        document.getElementById('filter-name').addEventListener('input', applyApplicantFilters);
+        document.getElementById('filter-experience').addEventListener('change', applyApplicantFilters);
+    });
+    function renderApplicants(applications, users) {
+        if (applications.length === 0) {
+            document.getElementById('applicants-list').innerHTML = '<p>No applicants for this job yet.</p>';
+            return;
+        }
+        document.getElementById('applicants-list').innerHTML = applications.map(app => {
+            const user = users.find(u => u.id === app.user);
+            return `<div class="application-card">
+                <div><strong>Name:</strong> ${user ? user.username : 'Unknown'}</div>
+                <div><strong>Email:</strong> ${user ? user.email : 'Unknown'}</div>
+                <div><strong>Experience:</strong> ${user && user.experience !== undefined ? user.experience : 'N/A'} years</div>
+                <div><strong>LinkedIn:</strong> ${user && user.linkedin ? `<a href='${user.linkedin}' target='_blank'>${user.linkedin}</a>` : 'N/A'}</div>
+                <div><strong>CV:</strong> ${user && user.cvLink ? `<a href='${user.cvLink}' target='_blank'>CV Link</a>` : (user && user.cvFile ? `<a href='${user.cvFile}' target='_blank'>CV File</a>` : 'N/A')}</div>
+                <div><strong>Status:</strong> <select data-app-id="${app.id}" class="app-status-select">
+                    <option value="pending" ${app.status==='pending'?'selected':''}>Pending</option>
+                    <option value="reviewed" ${app.status==='reviewed'?'selected':''}>Reviewed</option>
+                    <option value="interviewed" ${app.status==='interviewed'?'selected':''}>Interviewed</option>
+                    <option value="rejected" ${app.status==='rejected'?'selected':''}>Rejected</option>
+                </select></div>
+                <div><strong>Applied on:</strong> ${formatDate(app.applied_at || app.appliedAt)}</div>
+            </div>`;
+        }).join('');
+        setTimeout(() => {
+            document.querySelectorAll('.app-status-select').forEach(select => {
+                select.addEventListener('change', async function() {
+                    const appId = this.getAttribute('data-app-id');
+                    await updateApplicationStatus(appId, this.value);
+                });
+            });
+        }, 100);
+    }
+    function applyApplicantFilters() {
+        const nameVal = document.getElementById('filter-name').value.toLowerCase();
+        const expVal = document.getElementById('filter-experience').value;
+        let filtered = allApplications;
+        if (nameVal) {
+            filtered = filtered.filter(app => {
+                const user = allUsers.find(u => u.id === app.user);
+                return user && user.username && user.username.toLowerCase().includes(nameVal);
+            });
+        }
+        if (expVal) {
+            filtered = filtered.filter(app => {
+                const user = allUsers.find(u => u.id === app.user);
+                if (!user || user.experience === undefined) return false;
+                const exp = parseInt(user.experience, 10);
+                if (expVal === '0') return exp >= 0 && exp <= 1;
+                if (expVal === '1') return exp > 1 && exp <= 3;
+                if (expVal === '3') return exp > 3 && exp <= 5;
+                if (expVal === '5') return exp > 5;
+                return true;
+            });
+        }
+        renderApplicants(filtered, allUsers);
+    }
+    // Helper to update application status via API
+    async function updateApplicationStatus(appId, newStatus) {
+        await fetch(`http://localhost:8000/api/applications/${appId}/`, {
+            method: 'PATCH',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: newStatus })
+        });
+    }
+    </script>
+</body>
+</html>

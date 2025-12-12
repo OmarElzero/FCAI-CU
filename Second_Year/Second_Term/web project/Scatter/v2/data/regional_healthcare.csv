@@ -1,0 +1,8 @@
+Region,Hospitals,TotalPatients,AvgWaitTime,Capacity
+North,15,138902,114.8,0.75
+South,5,134221,86.6,0.77
+East,12,117582,69.0,0.64
+West,12,148316,62.0,0.71
+Central,6,69043,41.7,0.63
+Northeast,14,58899,61.9,0.89
+Southwest,19,103300,107.3,0.66

@@ -1,0 +1,1 @@
+Need to analyze our hospital wait list data for the quarterly board meeting. Want to see current wait list numbers, breakdown by case types, specialty performance, and regional distribution. Also need monthly trends and age profile analysis to understand patient demographics and wait times across different departments.

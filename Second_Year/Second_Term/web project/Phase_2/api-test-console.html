@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Testing Console - JobSearch</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            color: #333;
+            margin-top: 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .success {
+            background: #28a745;
+        }
+        .error {
+            background: #dc3545;
+        }
+        .results {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        input, select, textarea {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+        textarea {
+            width: 400px;
+            height: 60px;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            color: white;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .status.success { background: #28a745; }
+        .status.error { background: #dc3545; }
+        .status.pending { background: #ffc107; color: #212529; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 JobSearch API Testing Console</h1>
+        <p>This console helps test all API endpoints and frontend integration.</p>
+
+        <!-- User Authentication Tests -->
+        <div class="test-section">
+            <h3>👤 User Authentication</h3>
+            <div>
+                <h4>Register User</h4>
+                <input type="text" id="reg-username" placeholder="Username">
+                <input type="email" id="reg-email" placeholder="Email">
+                <input type="password" id="reg-password" placeholder="Password">
+                <label><input type="checkbox" id="reg-company"> Company User</label>
+                <input type="text" id="reg-company-name" placeholder="Company Name" style="display: none;">
+                <button onclick="testRegister()">Register</button>
+                <div id="register-results" class="results"></div>
+            </div>
+
+            <div>
+                <h4>Login User</h4>
+                <input type="text" id="login-username" placeholder="Username">
+                <input type="password" id="login-password" placeholder="Password">
+                <button onclick="testLogin()">Login</button>
+                <button onclick="testLogout()">Logout</button>
+                <div id="login-results" class="results"></div>
+            </div>
+
+            <div>
+                <h4>Current User Status</h4>
+                <button onclick="testCurrentUser()">Check Current User</button>
+                <button onclick="testListUsers()">List All Users</button>
+                <div id="user-status-results" class="results"></div>
+            </div>
+        </div>
+
+        <!-- Job Management Tests -->
+        <div class="test-section">
+            <h3>💼 Job Management</h3>
+            <div>
+                <h4>List Jobs</h4>
+                <button onclick="testListJobs()">List All Jobs</button>
+                <input type="text" id="filter-company" placeholder="Filter by Company">
+                <select id="filter-status">
+                    <option value="">Any Status</option>
+                    <option value="Open">Open</option>
+                    <option value="Closed">Closed</option>
+                </select>
+                <button onclick="testFilterJobs()">Filter Jobs</button>
+                <div id="jobs-results" class="results"></div>
+            </div>
+
+            <div>
+                <h4>Create Job (Company Users Only)</h4>
+                <input type="text" id="job-title" placeholder="Job Title">
+                <input type="text" id="job-salary" placeholder="Salary">
+                <input type="text" id="job-company" placeholder="Company">
+                <input type="number" id="job-experience" placeholder="Experience (years)" min="0">
+                <textarea id="job-description" placeholder="Job Description"></textarea>
+                <button onclick="testCreateJob()">Create Job</button>
+                <div id="create-job-results" class="results"></div>
+            </div>
+        </div>
+
+        <!-- Applications Tests -->
+        <div class="test-section">
+            <h3>📄 Job Applications</h3>
+            <div>
+                <h4>Apply for Job</h4>
+                <input type="number" id="apply-job-id" placeholder="Job ID" min="1">
+                <button onclick="testApplyForJob()">Apply</button>
+                <div id="apply-results" class="results"></div>
+            </div>
+
+            <div>
+                <h4>List Applications</h4>
+                <button onclick="testListApplications()">List My Applications</button>
+                <div id="applications-results" class="results"></div>
+            </div>
+        </div>
+
+        <!-- Frontend Navigation Tests -->
+        <div class="test-section">
+            <h3>🌐 Frontend Pages</h3>
+            <div>
+                <h4>Test Frontend Pages</h4>
+                <button onclick="openPage('index.html')">Home Page</button>
+                <button onclick="openPage('signup.html')">Signup</button>
+                <button onclick="openPage('login.html')">Login</button>
+                <button onclick="openPage('features/user/search_jobs.html')">Search Jobs</button>
+                <button onclick="openPage('features/admin/dashboard.html')">Admin Dashboard</button>
+                <button onclick="openPage('features/admin/add_job.html')">Add Job</button>
+                <button onclick="openPage('features/user/applied_jobs.html')">Applied Jobs</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000/api/';
+
+        // API request function
+        async function apiRequest(endpoint, options = {}) {
+            try {
+                if (!options.headers) {
+                    options.headers = { 'Content-Type': 'application/json' };
+                }
+                options.credentials = 'include';
+
+                const response = await fetch(`${API_BASE}${endpoint}`, options);
+                const data = await response.json().catch(() => ({}));
+                
+                return {
+                    status: response.status,
+                    ok: response.ok,
+                    data: data
+                };
+            } catch (error) {
+                return {
+                    status: 0,
+                    ok: false,
+                    error: error.message
+                };
+            }
+        }
+
+        // Display results
+        function displayResults(elementId, result) {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const statusClass = result.ok ? 'success' : 'error';
+            const status = result.ok ? 'SUCCESS' : 'ERROR';
+            
+            element.innerHTML = `[${timestamp}] <span class="status ${statusClass}">${status} ${result.status}</span>\n${JSON.stringify(result.data || result.error, null, 2)}`;
+        }
+
+        // User Authentication Tests
+        async function testRegister() {
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const isCompany = document.getElementById('reg-company').checked;
+            const company = document.getElementById('reg-company-name').value;
+
+            const data = {
+                username,
+                email,
+                password,
+                is_company: isCompany,
+                company: isCompany ? company : null
+            };
+
+            const result = await apiRequest('users/register/', {
+                method: 'POST',
+                body: JSON.stringify(data)
+            });
+
+            displayResults('register-results', result);
+        }
+
+        async function testLogin() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            const result = await apiRequest('users/login/', {
+                method: 'POST',
+                body: JSON.stringify({ username, password })
+            });
+
+            displayResults('login-results', result);
+        }
+
+        async function testLogout() {
+            const result = await apiRequest('users/logout/', {
+                method: 'POST'
+            });
+
+            displayResults('login-results', result);
+        }
+
+        async function testCurrentUser() {
+            const result = await apiRequest('users/');
+            displayResults('user-status-results', result);
+        }
+
+        async function testListUsers() {
+            const result = await apiRequest('users/');
+            displayResults('user-status-results', result);
+        }
+
+        // Job Management Tests
+        async function testListJobs() {
+            const result = await apiRequest('jobs/');
+            displayResults('jobs-results', result);
+        }
+
+        async function testFilterJobs() {
+            const company = document.getElementById('filter-company').value;
+            const status = document.getElementById('filter-status').value;
+            
+            let endpoint = 'jobs/';
+            const params = new URLSearchParams();
+            if (company) params.append('company', company);
+            if (status) params.append('status', status);
+            
+            if (params.toString()) {
+                endpoint += '?' + params.toString();
+            }
+
+            const result = await apiRequest(endpoint);
+            displayResults('jobs-results', result);
+        }
+
+        async function testCreateJob() {
+            const data = {
+                title: document.getElementById('job-title').value,
+                salary: document.getElementById('job-salary').value,
+                company: document.getElementById('job-company').value,
+                experience: parseInt(document.getElementById('job-experience').value),
+                description: document.getElementById('job-description').value,
+                status: 'Open'
+            };
+
+            const result = await apiRequest('jobs/', {
+                method: 'POST',
+                body: JSON.stringify(data)
+            });
+
+            displayResults('create-job-results', result);
+        }
+
+        // Application Tests
+        async function testApplyForJob() {
+            const jobId = document.getElementById('apply-job-id').value;
+            
+            const result = await apiRequest('applications/', {
+                method: 'POST',
+                body: JSON.stringify({
+                    job: parseInt(jobId),
+                    status: 'pending'
+                })
+            });
+
+            displayResults('apply-results', result);
+        }
+
+        async function testListApplications() {
+            const result = await apiRequest('applications/');
+            displayResults('applications-results', result);
+        }
+
+        // Frontend Navigation
+        function openPage(page) {
+            window.open(`http://localhost:8080/${page}`, '_blank');
+        }
+
+        // Toggle company name field
+        document.getElementById('reg-company').addEventListener('change', function() {
+            const companyNameField = document.getElementById('reg-company-name');
+            companyNameField.style.display = this.checked ? 'inline-block' : 'none';
+        });
+
+        // Auto-load jobs on page load
+        window.addEventListener('load', function() {
+            testListJobs();
+        });
+    </script>
+</body>
+</html>
